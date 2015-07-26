@@ -14,6 +14,7 @@ module Outbacker
   end
 
 
+  #
   # DSL-ish factory method to create an instance of OutcomeHandlerSet
   # given a block of outcome handlers.
   #
@@ -67,34 +68,37 @@ module Outbacker
     # Specify an outcome handler callback block for the specified
     # outcome key.
     #
-    def of(outcome_key)
-      unless block_given?
-        raise "No block provided for outcome #{outcome_key}"
-      end
-
-      if outcome_key == self.triggered_outcome
-        raise "Outcome #{outcome_key} already handled" if outcome_handled?
-        self.handled_outcome = outcome_key
-        yield(*self.args)
-      end
+    def of(outcome_key, &outcome_block)
+      execute_outcome_block(outcome_key, &outcome_block)
     end
 
     #
     # Provides an alternate way to specify a callback block using
     # method names.
     #
-    def method_missing(method_name, *args)
+    def method_missing(method_name, *args, &outcome_block)
       super unless /^outcome_of_(?<suffix>.*)/ =~ method_name.to_s
       outcome_key = suffix.to_sym
 
-      unless block_given?
+      execute_outcome_block(outcome_key, &outcome_block)
+    end
+
+
+    private
+
+    #
+    # Internal helper method to execute the given outcome block
+    # if it matches the triggered outcome.
+    #
+    def execute_outcome_block(outcome_key, &outcome_block)
+      if !outcome_block
         raise "No block provided for outcome #{outcome_key}"
       end
 
       if outcome_key == self.triggered_outcome
         raise "Outcome #{outcome_key} already handled" if outcome_handled?
         self.handled_outcome = outcome_key
-        yield(*self.args)
+        outcome_block.call(*self.args)
       end
     end
 
