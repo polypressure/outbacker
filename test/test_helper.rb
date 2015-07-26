@@ -1,10 +1,12 @@
+require 'coveralls'
+Coveralls.wear!
+
 require 'simplecov'
 SimpleCov.start do
   add_filter "/test/"
 end
 
-require 'coveralls'
-Coveralls.wear!
+
 
 require 'minitest/autorun'
 require 'minitest/pride'
