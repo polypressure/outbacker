@@ -7,11 +7,6 @@ if ENV["TRAVIS"]
     # No need to report coverage metrics for the test code
     add_filter "test"
   end
-
-  # Eager load the entire lib directory so that SimpleCov is able to report
-  # accurate code coverage metrics.
-  outbacker_lib = File.expand_path("../../lib", __FILE__)
-  at_exit { Dir["#{outbacker}/**/*.rb"].each { |rb| require(rb) } }
 end
 
 require 'minitest/autorun'
