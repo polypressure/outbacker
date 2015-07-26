@@ -27,4 +27,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "m", "~> 1.3.1"
   spec.add_development_dependency "simplecov"
   spec.add_development_dependency 'configurations', '~> 2.2.0'
+  spec.add_development_dependency "coveralls"
 end
