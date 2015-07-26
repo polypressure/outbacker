@@ -10,7 +10,7 @@ if ENV["TRAVIS"]
 
   # Eager load the entire lib directory so that SimpleCov is able to report
   # accurate code coverage metrics.
-  outbacker_lib = File.expand_path("../../../lib", __FILE__)
+  outbacker_lib = File.expand_path("../../lib", __FILE__)
   at_exit { Dir["#{outbacker}/**/*.rb"].each { |rb| require(rb) } }
 end
 
