@@ -1,7 +1,8 @@
 # Outbacker
 
 [![Build Status](https://travis-ci.org/polypressure/outbacker.svg?branch=master)](https://travis-ci.org/polypressure/outbacker)
-[![Coverage Status](http://coveralls.io/repos/polypressure/outbacker/badge.svg?branch=master&service=github)](http://coveralls.io/github/polypressure/outbacker?branch=master)
+[![Code Climate](https://codeclimate.com/github/polypressure/outbacker/badges/gpa.svg)](https://codeclimate.com/github/polypressure/outbacker)
+[![Test Coverage](https://codeclimate.com/github/polypressure/outbacker/badges/coverage.svg)](https://codeclimate.com/github/polypressure/outbacker/coverage)
 
 Outbacker ("outcome callbacks") is a microlibrary that I use to eliminate the conditional logic that's typically required in Rails controllers to act on results from your model methods.
 
