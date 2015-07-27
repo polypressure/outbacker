@@ -4,15 +4,15 @@
 [![Code Climate](https://codeclimate.com/github/polypressure/outbacker/badges/gpa.svg)](https://codeclimate.com/github/polypressure/outbacker)
 [![Test Coverage](https://codeclimate.com/github/polypressure/outbacker/badges/coverage.svg)](https://codeclimate.com/github/polypressure/outbacker/coverage)
 
-Rails developers have long known how important it is to keep controllers "skinny" and free of business logic. Controllers are supposed to be dumb dispatchers that take results from the model layer and turn them into redirects, flash messages, form re-renderings, session state updates, JSON responses, HTTP status codes, and so on.
+Rails developers have long known how important it is to keep controllers "skinny" and free of business logic. Our controllers are supposed to be dumb dispatchers that take results from the model layer and turn them into redirects, flash messages, form re-renderings, session state updates, JSON responses, HTTP status codes, and so on.
 
-But the conditional logic in typical Rails controllers to act on results from model methods and decide what to do next far too often attracts business logic and spirals out of control. Complicated logic sneaks into our controllers as we add code to handle new features, stories, and special cases. And the cultural and process controls we put in place to enforce good code hygiene chronically break down in the face of schedule pressure, growing teams, emergency fixes, etc.
+But far too often, the conditional logic in typical Rails controllers to act on results from models and decide what to do next attracts business logic and spirals out of control. Complicated logic sneaks into our controllers as we add code to handle new features, stories, and special cases. And the cultural and process controls we put in place to enforce good code hygiene chronically break down in the face of schedule pressure, growing teams, emergency fixes, etc.
 
 **Outbacker** ("outcome callbacks") is a very simple micro library that makes it easy to keep controllers free of this conditional logic. Controllers become simple, declarative mappings of business logic results to the redirects, flash messages, session state updates, HTTP status codes, and other actions that deliver results to the user.
 
 It turns out that not only is Outbacker a prophylaxis against fat, complicated controllers, it more generally supports a very simple, low-ceremony way to write intention-revealing Rails code with both skinny controllers _and_ skinny models. If you feel these are worthwhile aims for your Ruby/Rails code—but you've found many approaches to accomplish this ineffective or not worth the trouble—then you might find Outbacker valuable.
 
-**Note:** The README that follows has a lot of motivation, rationale, and explanation—arguably excessively so for such a simple library. If you're too impatient  , you can go straight to some [code examples](https://github.com/polypressure/outbacker/tree/master/examples). Hopefully, these examples are sufficient for you to get an understanding of what Outbacker provides, and how to use it. If not, you can always come back to this readme.
+**Note:** The README that follows has a lot of motivation, rationale, and explanation—maybe excessively so for such a simple library. If you're impatient, you can go straight to some [code examples](https://github.com/polypressure/outbacker/tree/master/examples). Hopefully, these examples are sufficient for you to get an understanding of what Outbacker provides, and how to use it. If not, you can always come back to this readme.
 
 ## A Typical Rails Controller
 
@@ -150,7 +150,7 @@ end
 
 Note that your method names here must begin with the "outcome_of" prefix. The outcome key is extracted from the method name by stripping that prefix. The `on_outcome` object has been renamed to simply `on`, again for the sake of readability.
 
-For whatever reasons, you might prefer this syntax. But note that the implementation of this syntax depends on `method_missing`—which as has been discussed elsewhere, can be problematic.
+For whatever reasons, you might prefer this syntax. But note that the implementation of this syntax depends on `method_missing`—for which the usual caveats apply.
 
 
 ## Business Logic Objects with Outbacker
@@ -219,7 +219,9 @@ end
 
 The first thing to point out here: our business-logic object is a PORO, i.e., a plain-old Ruby object. It can pretty much be whatever type of PORO you want: a domain object, a use case object, a DCI context, a service object—whatever.
 
-Next, to enable Outbacker support in your business object, you have to `include` the `Outbacker` module in your class. For the most part, you can include Outbacker in any class, but to discourage you from putting business logic in your ActiveRecord models, by default Outbacker will actually raise an exception if you try to include it within an ActiveRecord (or ActiveController) subclass. This is Outbacker's simple tactic for encouraging us to keep our models skinny. The bulk of our business logic goes into easily-tested POROs, while our models are focused on persistence and simple validation rules—and free of things like ActiveRecord callback spaghetti.
+Next, to enable Outbacker support in your business object, you have to `include` the `Outbacker` module in your class. For the most part, you can include Outbacker in any class, but to discourage you from putting business logic in your ActiveRecord models, by default Outbacker will actually raise an exception if you try to include it within an ActiveRecord (or ActiveController) subclass.
+
+This is Outbacker's simple tactic to help keep our models skinny. It encourages us to move the bulk of our business logic into POROs that are easy to test in isolation. And our models can then be focused on persistence and simple validation rules—free of ailments like ActiveRecord callback spaghetti, brazen violations of the Single Responsibility Principle, etc.
 
 #### Excluding/allowing other types of business objects
 
@@ -274,7 +276,7 @@ Of course, with any non-trivial business logic, you will have multiple calls to 
 
 The return value of an Outbacked method is the same as any Ruby method (i.e., the value of the last evaluated expression). However, we typically don't care about return values when using Outbacker. In a sense, the result/return values are the outcome, as well as any values passed as arguments to the outcome block.
 
-However, sometimes you want to invoke your business-logic methods without having to provide a block of outcome callbacks. For example, when invoking these methods within a Rails console/REPL for debugging or support purposes, sometimes it's inconvenient to have to provide callback blocks. You merely want to execute the method, and don't need to act on the outcome—you just want to know the result.
+However, sometimes you want to invoke your business-logic methods without having to provide a block of outcome callbacks. For example, when invoking these methods within a Rails console/REPL for debugging or support purposes, it can be inconvenient to have to provide callback blocks. You just want to execute the method, and don't need to act on the outcome—you only need to know the result.
 
 If you don't provide a callback block to an Outbacked method, Outbacker simply returns the outcome key and any arguments, as passed to the `handle` method. So for the following call to the `handle` method:
 
@@ -314,7 +316,7 @@ end
 
 Here we've stubbed the `AppointmentCalendar#book_appointment` method, specifying that we want it to trigger the `insufficient_credits` outcome, passing along the `stubbed_appointment object` (created by whatever test double tools you're already using) to our outcome block. You can of course specify any number of objects to be passed by the stubbed method to the outcome block.
 
-Note that this only provides stubbing functionality, with no support for mocking and setting/verifying expectations that methods are invoked by your object under your test. In practice, I haven't found this to be a problem, because these days I find this level of mocking often results in brittle, expensive-to-maintain tests. If you disagree, or have a valid need for mocks, then you can always use an existing mocking library, and write tests to set/verify expectations, distinct from your tests that depend on stubbing. You probably should be doing this anyway if you adhere to the practice of a single assertion per test.
+Note that this only provides stubbing functionality, with no support for mocking and setting/verifying expectations that methods are invoked by your object under your test. In practice, I haven't found this to be a problem, because these days I find this level of mocking often results in brittle, expensive-to-maintain tests. If you disagree, or have a valid need for mocks, then you can always use an existing mocking library—and write tests to set/verify expectations, distinct from your tests that depend on stubbing. You probably should be doing this anyway if you adhere to the practice of a single assertion per test.
 
 
 ## Installation
@@ -335,7 +337,7 @@ Or install it yourself as:
 
 ## Usage
 
-Write business logic object, controllers, and tests as described above.
+Write business logic objects, controllers, and tests as described above.
 
 ## Contributing
 
