@@ -8,7 +8,7 @@ if ENV["TRAVIS"]
     add_filter "test"
   end
 
-  outbacker_lib = File.expand_path("../lib", __FILE__)
+  outbacker_lib = File.expand_path("../../lib", __FILE__)
   at_exit { Dir["#{outbacker_lib}/**/*.rb"].each { |rb| require(rb) } }
 end
 
