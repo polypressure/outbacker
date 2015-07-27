@@ -1,16 +1,5 @@
-if ENV["TRAVIS"]
-  require "simplecov"
-  require "coveralls"
-
-  SimpleCov.formatter = Coveralls::SimpleCov::Formatter
-  SimpleCov.start do
-    # No need to report coverage metrics for the test code
-    add_filter "test"
-  end
-
-  outbacker_lib = File.expand_path("../../lib", __FILE__)
-  at_exit { Dir["#{outbacker_lib}/**/*.rb"].each { |rb| require(rb) } }
-end
+require "codeclimate-test-reporter"
+CodeClimate::TestReporter.start
 
 require 'minitest/autorun'
 require 'minitest/pride'
