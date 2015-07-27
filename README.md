@@ -1,5 +1,8 @@
 # Outbacker
 
+[![Build Status](https://travis-ci.org/polypressure/outbacker.svg?branch=master)](https://travis-ci.org/polypressure/outbacker)
+[![Coverage Status](http://coveralls.io/repos/polypressure/outbacker/badge.svg?branch=master&service=github)](http://coveralls.io/github/polypressure/outbacker?branch=master)
+
 Outbacker ("outcome callbacks") is a microlibrary that I use to eliminate the conditional logic that's typically required in Rails controllers to act on results from your model methods.
 
 In a conventional full-stack Rails app, this would be the controller code to check the return value from ActiveRecord persistence methods and decide where to redirect to, what flash message to display, what form to re-render, etc. Similarly, within API-only applications, this is the logic that determines what JSON and HTTP status code to return, and so on.
