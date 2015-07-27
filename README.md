@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/polypressure/outbacker.svg?branch=master)](https://travis-ci.org/polypressure/outbacker)
 [![Code Climate](https://codeclimate.com/github/polypressure/outbacker/badges/gpa.svg)](https://codeclimate.com/github/polypressure/outbacker)
 [![Test Coverage](https://codeclimate.com/github/polypressure/outbacker/badges/coverage.svg)](https://codeclimate.com/github/polypressure/outbacker/coverage)
+[![Gem Version](https://badge.fury.io/rb/outbacker.svg)](http://badge.fury.io/rb/outbacker)
 
 Rails developers have long known how important it is to keep controllers "skinny" and free of business logic. Our controllers are supposed to be dumb dispatchers that take results from the model layer and turn them into redirects, flash messages, form re-renderings, session state updates, JSON responses, HTTP status codes, and so on.
 
