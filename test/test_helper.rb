@@ -9,7 +9,7 @@ if ENV["TRAVIS"]
   end
 
   outbacker_lib = File.expand_path("../lib", __FILE__)
-  at_exit { Dir["#{outbacker}/**/*.rb"].each { |rb| require(rb) } }
+  at_exit { Dir["#{outbacker_lib}/**/*.rb"].each { |rb| require(rb) } }
 end
 
 require 'minitest/autorun'
