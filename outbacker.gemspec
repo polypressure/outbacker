@@ -8,10 +8,11 @@ Gem::Specification.new do |spec|
   spec.version       = Outbacker::VERSION
   spec.authors       = ["Anthony Garcia"]
   spec.email         = ["polypressure@outlook.com"]
-  spec.summary       = <<-DESC
-    A micro library to simplify Rails controllers and encourage
-    intention-revealing Rails code with both skinny controllers
-    skinny and skinny models.
+  spec.summary       = "Drive complexity out of your Rails controllers once and for all, while keeping your models fit and trim."
+  spec.description   = <<-DESC
+    A micro library to keep conditional logic out of your Rails
+    controllers and help you write more intention-revealing
+    code with both skinny controllers and skinny models.
   DESC
   spec.homepage      = "https://github.com/polypressure/outbacker"
   spec.license       = "MIT"
@@ -27,6 +28,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "m", "~> 1.3.1"
   spec.add_development_dependency "simplecov"
   spec.add_development_dependency 'configurations', '~> 2.2.0'
-  spec.add_development_dependency "coveralls"
   spec.add_development_dependency "codeclimate-test-reporter"
 end
