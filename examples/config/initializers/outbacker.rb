@@ -1,5 +1,9 @@
 
 #
+# Gem initializer file, within a rails app this file would
+# go in config/initializrs.
+#
+#
 # Specify where the Outbacker module cannot be included.
 # If you try to include Outbacker within subclasses of
 # ActiveRecord::Base, ActionController::Base, or

@@ -6,6 +6,12 @@ require 'outbacker'
 require 'test_support/outbacker_stub'
 
 
+#
+# A controller test for the AppointmentsController.
+# This shows how to use Outbacker::OutbackerStub to "stub"
+# outcomes, since standard mocking/stubbing libraries
+# can't provide this.
+#
 class AppointmentsControllerTest < ActionController::TestCase
 
 

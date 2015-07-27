@@ -8,7 +8,11 @@ class AppointmentCalendar
 
   #
   # Include the Outbacker module. See config/initializers/outbacker.rb
-  # for the restrictions on where you can include this.
+  # for the restrictions on where you can include this. By default,
+  # if you try to include Outbacker in an ActiveRecord or ActionController
+  # subclass, an exception will be raised.
+  #
+  # This helps to ensure both your models (and controllers) are skinny.
   #
   include Outbacker
 

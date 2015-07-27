@@ -1,14 +1,11 @@
 #
-# Start here, then look at:
-#  * examples/app/domain/appointment_calendar.rb
-#  * examples/app/config/outbacker.rb
-#  * examples/test/controllers/appointments_controller_test.rb
-#  * examples/test/test_helper.rb
+# Conventional Rails controller, with the create method
+# implemented twice: before and after using Outbacker.
 #
 class AppointmentsController < ApplicationController
 
   #
-  # A conventional controller method:
+  # A conventional controller method, before using Outbacker:
   #
   def create
     @appointment = Appointment.new(appointment_params)
