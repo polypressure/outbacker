@@ -185,6 +185,14 @@ class OutbackerTest < Minitest::Test
     assert_equal expected_return_values, actual_return_values
   end
 
+  test "can use 'and return' syntax following 'outcomes.handle...' in outbacked method '" do
+    outbacked_domain_object.domain_method_with_chained_return do |on_outcome|
+      on_outcome.of(:outcome_1) do
+        pass "Successfully handled outcome and chained return"
+      end
+    end
+  end
+
 
 
   test "including within a subclass of ActiveRecord raises an exception" do
@@ -298,6 +306,13 @@ class SomeDomainObject
         outcomes.handle :outcome_4, "outcome 4 block arg1", "outcome 4 block arg2", "outcome 4 block arg3"
       end
 
+    end
+  end
+
+  def domain_method_with_chained_return(&outcome_handlers)
+    with(outcome_handlers) do |outcomes|
+      outcomes.handle :outcome_1 and return
+      fail "Should have returned"
     end
   end
 

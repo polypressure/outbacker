@@ -54,6 +54,7 @@ module Outbacker
         outcome_handlers.call(self)
         raise "No outcome handler for outcome #{outcome_key}" unless outcome_handled?
       end
+      true
     end
 
     #
