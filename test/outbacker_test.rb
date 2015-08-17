@@ -185,7 +185,7 @@ class OutbackerTest < Minitest::Test
     assert_equal expected_return_values, actual_return_values
   end
 
-  test "can use 'and return' syntax following 'outcomes.handle...' in outbacked method '" do
+  test "can use 'and return' syntax following 'outcomes.handle...' in outbacked method" do
     outbacked_domain_object.domain_method_with_chained_return do |on_outcome|
       on_outcome.of(:outcome_1) do
         pass "Successfully handled outcome and chained return"
