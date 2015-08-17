@@ -21,7 +21,7 @@ class AppointmentsControllerTest < ActionController::TestCase
     # it will have an outcome of :insufficient_credits.
     #
     calendar_stub = Outbacker::OutbackerStub.new
-    calendar_stub.stub('book_appointment', :insufficient_credits, stubbed_appointment)
+    calendar_stub.stub_outbacked_method('book_appointment', :insufficient_credits, stubbed_appointment)
 
     # This is a method we added to our controller to inject dependencies:
     @controller.inject_calendar(calendar_stub)

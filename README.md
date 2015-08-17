@@ -304,7 +304,7 @@ require 'test_support/outbacker_stub'
 
 test "user is redirected to the credits purchase page when they lack sufficient credits" do
   calendar_stub = Outbacker::OutbackerStub.new
-  calendar_stub.stub('book_appointment', :insufficient_credits, stubbed_appointment)
+  calendar_stub.stub_outbacked_method('book_appointment', :insufficient_credits, stubbed_appointment)
 
   # This is a method we added to our controller to inject dependencies:
   @controller.inject_calendar(calendar_stub)
