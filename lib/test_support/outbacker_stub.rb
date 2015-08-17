@@ -38,11 +38,5 @@ module Outbacker
       })
     end
 
-    def stub_simple_method(method_name, result)
-      define_singleton_method(method_name) do
-        result
-      end
-    end
-
   end
 end
