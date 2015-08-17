@@ -6,7 +6,7 @@ class OutbackerStubTest < Minitest::Test
   test "#stub defines the specified method on the stub instance" do
     outbacker_stub = Outbacker::OutbackerStub.new
 
-    outbacker_stub.stub('register_user', :successful_registration, Object.new)
+    outbacker_stub.stub_outbacked_method('register_user', :successful_registration, Object.new)
 
     assert_respond_to outbacker_stub, 'register_user'
   end
@@ -15,7 +15,7 @@ class OutbackerStubTest < Minitest::Test
     outbacker_stub = Outbacker::OutbackerStub.new
     correct_block_executed = false
 
-    outbacker_stub.stub('register_user', :successful_registration, Object.new)
+    outbacker_stub.stub_outbacked_method('register_user', :successful_registration, Object.new)
 
     outbacker_stub.register_user do |on_outcome|
       on_outcome.of(:successful_registration) do |user|
@@ -40,7 +40,7 @@ class OutbackerStubTest < Minitest::Test
     block_arg_2 = Object.new
     block_args_passed = []
 
-    outbacker_stub.stub('register_user', :successful_registration, block_arg_1, block_arg_2)
+    outbacker_stub.stub_outbacked_method('register_user', :successful_registration, block_arg_1, block_arg_2)
 
     outbacker_stub.register_user do |on_outcome|
       on_outcome.of(:successful_registration) do |arg1, arg2|

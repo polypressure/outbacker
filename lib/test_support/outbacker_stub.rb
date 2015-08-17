@@ -26,16 +26,22 @@ module Outbacker
 
     def initialize(method_name=nil, outcome_key=nil, *block_args)
       if method_name && outcome_key
-        stub(method_name, outcome_key, *block_args)
+        stub_outbacked_method(method_name, outcome_key, *block_args)
       end
     end
 
-    def stub(method_name, outcome_key, *block_args)
+    def stub_outbacked_method(method_name, outcome_key, *block_args)
       define_singleton_method(method_name, ->(*args, &outcome_handlers) {
         with(outcome_handlers) do |outcomes|
           outcomes.handle outcome_key, *block_args
         end
       })
+    end
+
+    def stub_simple_method(method_name, result)
+      define_singleton_method(method_name) do
+        result
+      end
     end
 
   end
