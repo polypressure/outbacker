@@ -4,6 +4,14 @@ CodeClimate::TestReporter.start
 require 'minitest/autorun'
 require 'minitest/pride'
 
+require "minitest/reporters"
+Minitest::Reporters.use!(
+  Minitest::Reporters::SpecReporter.new,
+  ENV,
+  Minitest.backtrace_filter
+)
+
+
 #
 # Stub out ActiveRecord just for testing purposes, so we don't
 # need to load and have a dependency on Rails just to test that
