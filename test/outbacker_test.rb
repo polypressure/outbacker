@@ -104,7 +104,7 @@ class OutbackerTest < Minitest::Test
   end
 
 
-  test "exception raised when no callback is provided for the actual outcome" do
+  test "error raised when no callback is provided for the actual outcome" do
     assert_raises(RuntimeError) {
       outbacked_domain_object.some_domain_method("input that will result in outcome 4") do |on_outcome|
         on_outcome.of(:outcome_1) do |callback_block_arg|
@@ -117,7 +117,7 @@ class OutbackerTest < Minitest::Test
   end
 
 
-  test "exception raised when the actual outcome is handled more than once" do
+  test "error raised when the actual outcome is handled more than once" do
     assert_raises(RuntimeError) {
       outbacked_domain_object.some_domain_method("input that will result in outcome 4") do |on_outcome|
         on_outcome.of(:outcome_4) do |callback_block_arg|
@@ -129,7 +129,7 @@ class OutbackerTest < Minitest::Test
     }
   end
 
-  test "exception raised when no block is provided for a specific outcome and callbacks are specified with symbols" do
+  test "error raised when no block is provided for a specific outcome and callbacks are specified with symbols" do
     assert_raises(RuntimeError) {
       outbacked_domain_object.some_domain_method("input that will result in outcome 1") do |on_outcome|
         on_outcome.of(:outcome_1)
@@ -137,7 +137,7 @@ class OutbackerTest < Minitest::Test
     }
   end
 
-  test "exception raised when no block is provided for a specific outcome and callbacks are specified with methods" do
+  test "error raised when no block is provided for a specific outcome and callbacks are specified with methods" do
     assert_raises(RuntimeError) {
       outbacked_domain_object.some_domain_method("input that will result in outcome 1") do |on|
         on.outcome_of_outcome_1
@@ -145,7 +145,7 @@ class OutbackerTest < Minitest::Test
     }
   end
 
-  test "exception raised when no outcome is triggered" do
+  test "error raised when no outcome is triggered" do
     assert_raises(RuntimeError) {
       outbacked_domain_object.domain_method_with_no_outcome("input that will result in outcome 1") do |on_outcome|
         on_outcome.of(:outcome_1) do |callback_block_arg|
@@ -157,7 +157,28 @@ class OutbackerTest < Minitest::Test
     }
   end
 
-  test "exception raised when multiple outcomes are triggered" do
+  test "error raised when no outcome is triggered even if an early return is done" do
+    assert_raises(RuntimeError) {
+      outbacked_domain_object.domain_method_with_no_outcome_and_early_return do |on_outcome|
+        on_outcome.of(:outcome_1) do |callback_block_arg|
+          fail "Should not have executed block, expected early return."
+        end
+      end
+    }
+  end
+
+  test "when error raised original error is passed through/raised" do
+    assert_raises(ZeroDivisionError) {
+      outbacked_domain_object.domain_method_that_raises_error do |on_outcome|
+        on_outcome.of(:outcome_1) do |callback_block_arg|
+          fail "Should not have executed block, expected early return."
+        end
+      end
+    }
+  end
+
+
+  test "error raised when multiple outcomes are triggered" do
     assert_raises(RuntimeError) {
       outbacked_domain_object.domain_method_with_multiple_outcomes do |on_outcome|
         on_outcome.of(:outcome_1) do
@@ -193,9 +214,7 @@ class OutbackerTest < Minitest::Test
     end
   end
 
-
-
-  test "including within a subclass of ActiveRecord raises an exception" do
+  test "including within a subclass of ActiveRecord raises an error" do
     assert_raises(RuntimeError) {
       class SomeActiveRecordClass < ActiveRecord::Base
         include Outbacker
@@ -203,8 +222,7 @@ class OutbackerTest < Minitest::Test
     }
   end
 
-
-  test "including within a subclass of ActionController raises an exception" do
+  test "including within a subclass of ActionController raises an error" do
     assert_raises(RuntimeError) {
       class SomeControllerClass < ActionController::Base
         include Outbacker
@@ -212,8 +230,7 @@ class OutbackerTest < Minitest::Test
     }
   end
 
-
-  test "including within a class that isn't a subclass of ActiveRecord does not raise an exception" do
+  test "including within a class that isn't a subclass of ActiveRecord does not raise an error" do
     class SomeNonActiveRecordOrControllerClass
       include Outbacker
     end
@@ -221,7 +238,7 @@ class OutbackerTest < Minitest::Test
     assert_respond_to SomeNonActiveRecordOrControllerClass.new, :with
   end
 
-  test "trying to include a subclass of another blacklisted class raises an exception" do
+  test "trying to include a subclass of another blacklisted class raises an error" do
     class BlacklistedClass
     end
 
@@ -237,7 +254,7 @@ class OutbackerTest < Minitest::Test
 
   end
 
-  test "when a whitelist is set, trying to include a subclass of a non-whitelisted class raises an exception" do
+  test "when a whitelist is set, trying to include a subclass of a non-whitelisted class raises an error" do
     class WhitelistedClass
     end
 
@@ -256,7 +273,7 @@ class OutbackerTest < Minitest::Test
 
   end
 
-  test "when a whitelist is set, trying to include a subclass of a whitelisted class doesn't raise an exception" do
+  test "when a whitelist is set, trying to include a subclass of a whitelisted class doesn't raise an error" do
     class WhitelistedClass
       include Outbacker
     end
@@ -318,6 +335,24 @@ class SomeDomainObject
 
   def domain_method_with_no_outcome(arg, &outcome_handlers)
     with(outcome_handlers) do |outcomes|
+    end
+  end
+
+  def domain_method_with_no_outcome_and_early_return(&outcome_handlers)
+    with(outcome_handlers) do |outcomes|
+      s = "some logic"
+      return if s # Return early
+      t = "some other logic we won't reach"
+      outcomes.handle :outcome_1, "outcome 1 block argument"
+    end
+  end
+
+  def domain_method_that_raises_error(&outcome_handlers)
+    with(outcome_handlers) do |outcomes|
+      s = "some logic"
+      raise ZeroDivisionError if s
+      t = "some other logic we won't reach"
+      outcomes.handle :outcome_1, "outcome 1 block argument"
     end
   end
 

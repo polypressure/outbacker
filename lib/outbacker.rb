@@ -25,9 +25,23 @@ module Outbacker
     outcome_handler_set = OutcomeHandlerSet.new(outcome_handlers)
     yield outcome_handler_set
 
-    if outcome_handlers.nil?
+    # Just return the triggered outcome and the args intended
+    # for the outcome callback if no callbacks are provided:
+    unless outcome_handlers
       return outcome_handler_set.triggered_outcome, *outcome_handler_set.args
-    else
+    end
+
+  #
+  # The rest is a check to make sure at least one outcome handler
+  # was invoked/triggered by the outbacked object, and handled by
+  # the caller...even if there was an early return from the "with"
+  # statement, and while preserving any errors raised.
+  #
+  rescue
+    @__exception_raised_outback = true
+    raise
+  ensure
+    if outcome_handlers && !@__exception_raised_outback
       raise "No outcome selected" unless outcome_handler_set.outcome_handled?
     end
   end
@@ -38,7 +52,7 @@ module Outbacker
   OutcomeHandlerSet = Struct.new(:outcome_handlers,
                                  :triggered_outcome,
                                  :args,
-                                 :handled_outcome) do
+                                 :outcome_handled_by_caller) do
 
     #
     # Process the outcome specified by the given outcome_key,
@@ -62,7 +76,11 @@ module Outbacker
     # handled by some han dler.
     #
     def outcome_handled?
-      !!self.handled_outcome
+      !!self.outcome_handled_by_caller
+    end
+
+    def triggered_outcome_matches?(outcome_key)
+      outcome_key == self.triggered_outcome
     end
 
     #
@@ -91,14 +109,14 @@ module Outbacker
     # Internal helper method to execute the given outcome block
     # if it matches the triggered outcome.
     #
-    def execute_outcome_block(outcome_key, &outcome_block)
+    def execute_outcome_block(outcome_block_key, &outcome_block)
       if !outcome_block
-        raise "No block provided for outcome #{outcome_key}"
+        raise "No block provided for outcome #{outcome_block_key}"
       end
 
-      if outcome_key == self.triggered_outcome
-        raise "Outcome #{outcome_key} already handled" if outcome_handled?
-        self.handled_outcome = outcome_key
+      if triggered_outcome_matches?(outcome_block_key)
+        raise "Outcome #{outcome_block_key} already handled" if outcome_handled?
+        self.outcome_handled_by_caller = outcome_block_key
         outcome_block.call(*self.args)
       end
     end
